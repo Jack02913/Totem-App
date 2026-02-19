@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance App — Dashboard Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0B0F1E;
+            --card: #141929;
+            --card2: #1A2036;
+            --border: rgba(255,255,255,0.07);
+            --brand: #7C6EFA;
+            --brand-light: rgba(124,110,250,0.12);
+            --teal: #4ECDC4;
+            --teal-light: rgba(78,205,196,0.12);
+            --amber: #F7C84B;
+            --amber-light: rgba(247,200,75,0.12);
+            --red: #FF6B6B;
+            --red-light: rgba(255,107,107,0.12);
+            --green: #51CF66;
+            --green-light: rgba(81,207,102,0.12);
+            --text: #F0F4FF;
+            --text2: #8B95B0;
+            --text3: #3E4660;
+        }
+
+        body {
+            background: #060910;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 24px;
+        }
+
+        .page-wrapper {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            max-width: 1080px;
+            width: 100%;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            flex: 1;
+            max-width: 300px;
+            position: sticky;
+            top: 32px;
+        }
+
+        .sidebar h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar .subtitle {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .tier-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+
+        .tier-btn:hover, .tier-btn.active {
+            border-color: var(--brand);
+            background: var(--brand-light);
+        }
+
+        .tier-btn .t-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .tier-btn .t-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .tier-btn .t-desc {
+            font-size: 11px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .notes-head {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 24px 0 10px;
+        }
+
+        .note {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .note-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--brand);
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .note p {
+            font-size: 11px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        /* ── Phone ── */
+        .phone-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .phone-outer {
+            width: 390px;
+            background: #181830;
+            border-radius: 54px;
+            padding: 14px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.1),
+                0 40px 100px rgba(0,0,0,0.9),
+                inset 0 0 0 1px rgba(255,255,255,0.04);
+        }
+
+        .phone-screen {
+            background: var(--bg);
+            border-radius: 44px;
+            overflow: hidden;
+            height: 844px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dynamic-island {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 34px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 30;
+        }
+
+        /* Status bar */
+        .status-bar {
+            height: 54px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 28px 8px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        .status-time { font-size: 15px; font-weight: 600; color: var(--text); }
+
+        .status-icons { display: flex; gap: 5px; align-items: center; }
+
+        /* Tier indicators row */
+        .tier-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 20px 4px;
+            flex-shrink: 0;
+        }
+
+        .tier-badge-pill {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--brand);
+            background: var(--brand-light);
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .tier-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .tdot {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--text3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tdot.active { background: var(--brand); width: 18px; }
+        .tdot:not(.active) { width: 5px; }
+
+        /* Slider */
+        .screen-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tier-slider {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .tier-panel {
+            width: 33.333%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 4px 20px 96px;
+            scrollbar-width: none;
+        }
+        .tier-panel::-webkit-scrollbar { display: none; }
+
+        /* Bottom nav */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 82px;
+            background: rgba(11,15,30,0.92);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-around;
+            padding: 12px 0 0;
+            z-index: 20;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 2px 10px;
+        }
+
+        .nav-icon { width: 22px; height: 22px; }
+        .nav-icon svg { width: 22px; height: 22px; }
+        .nav-label { font-size: 10px; font-weight: 500; }
+        .nav-item.active .nav-label { color: var(--brand); }
+        .nav-item.active .nav-icon svg { fill: var(--brand); }
+        .nav-item:not(.active) .nav-label { color: var(--text3); }
+        .nav-item:not(.active) .nav-icon svg { fill: var(--text3); }
+
+        /* Arrow controls */
+        .arrow-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .arrow-btn {
+            width: 38px;
+            height: 38px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text2);
+            font-size: 16px;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .arrow-btn:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-light);
+        }
+
+        .arrow-label {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        /* ══════════════════════════════
+           SHARED COMPONENT STYLES
+        ══════════════════════════════ */
+
+        .section-hd {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 14px 0 8px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .section-link {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--brand);
+            cursor: pointer;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 7px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-green { background: var(--green-light); color: var(--green); }
+        .badge-amber { background: var(--amber-light); color: var(--amber); }
+        .badge-red   { background: var(--red-light);   color: var(--red);   }
+        .badge-brand { background: var(--brand-light); color: var(--brand); }
+
+        /* ══════════════════════════════
+           TIER 1 — OVERVIEW
+        ══════════════════════════════ */
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 0 12px;
+        }
+
+        .greeting { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+        .greeting-date { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand), #9C8FFF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Payday pill */
+        .payday-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 8px 16px;
+            margin-bottom: 14px;
+        }
+
+        .pay-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--amber);
+            flex-shrink: 0;
+        }
+
+        .pay-text { font-size: 13px; color: var(--text2); flex: 1; }
+        .pay-text strong { color: var(--amber); }
+        .pay-cycle { font-size: 11px; color: var(--text3); white-space: nowrap; }
+
+        /* Safe to Spend hero */
+        .hero-card {
+            background: linear-gradient(135deg, #1b1244 0%, #141929 65%);
+            border: 1px solid rgba(124,110,250,0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(124,110,250,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .hero-amount {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -2.5px;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .hero-amount .dollar {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text2);
+            vertical-align: top;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .hero-sub { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
+
+        .progress-track {
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .fill-brand { background: linear-gradient(90deg, var(--brand), #9C8FFF); }
+        .fill-green { background: var(--green); }
+        .fill-amber { background: var(--amber); }
+        .fill-red   { background: var(--red);   }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-labels span { font-size: 10px; color: var(--text3); }
+
+        /* Two-col metrics */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 0;
+        }
+
+        .metric-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 16px;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.8px;
+            margin-bottom: 4px;
+        }
+
+        .metric-sub { font-size: 11px; color: var(--text2); }
+
+        /* AI Insight card */
+        .insight-card {
+            background: var(--card);
+            border: 1px solid rgba(247,200,75,0.25);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .insight-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--amber-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .insight-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--amber);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+
+        .insight-text {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .insight-cta {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--brand);
+            margin-top: 6px;
+            cursor: pointer;
+        }
+
+        /* Bills card */
+        .list-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .list-item:last-child { border-bottom: none; }
+
+        .list-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .list-info { flex: 1; }
+        .list-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .list-sub  { font-size: 11px; color: var(--text2); margin-top: 1px; }
+
+        .list-right { text-align: right; }
+        .list-amount { font-size: 14px; font-weight: 700; color: var(--text); }
+        .list-urgency { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* ══════════════════════════════
+           TIER 2 — FINANCIAL HEALTH
+        ══════════════════════════════ */
+
+        .tier-heading {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            padding-top: 10px;
+            margin-bottom: 2px;
+        }
+
+        .tier-sub {
+            font-size: 12px;
+            color: var(--text2);
+            margin-bottom: 4px;
+        }
+
+        /* Burn rate */
+        .burn-item {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .burn-item:last-child { border-bottom: none; }
+
+        .burn-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .burn-cat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .burn-right { text-align: right; }
+        .burn-spent { font-size: 14px; font-weight: 700; color: var(--text); }
+        .burn-budget { font-size: 10px; color: var(--text2); }
+
+        .burn-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .burn-pct { font-size: 10px; color: var(--text3); }
+
+        /* Progress track with marker */
+        .progress-wrap { position: relative; }
+
+        .period-marker {
+            position: absolute;
+            top: -3px;
+            width: 2px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 1px;
+        }
+
+        /* Subscription card */
+        .sub-card {
+            background: linear-gradient(135deg, #0d1a26 0%, var(--card) 100%);
+            border: 1px solid rgba(78,205,196,0.2);
+            border-radius: 16px;
+            padding: 18px;
+        }
+
+        .sub-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .sub-head-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .sub-count {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -1px;
+        }
+
+        .sub-count span {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text2);
+            letter-spacing: 0;
+        }
+
+        .sub-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .sub-metric {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .sub-metric-label { font-size: 10px; color: var(--text2); margin-bottom: 3px; }
+        .sub-metric-value { font-size: 19px; font-weight: 700; letter-spacing: -0.5px; }
+
+        /* Health pair */
+        .health-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .health-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .health-icon { font-size: 20px; margin-bottom: 8px; }
+        .health-label { font-size: 10px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 4px; }
+        .health-value { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -1px; line-height: 1; }
+        .health-unit  { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+        /* ══════════════════════════════
+           TIER 3 — TRENDS & PATTERNS
+        ══════════════════════════════ */
+
+        /* Lifestyle creep */
+        .creep-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+        }
+
+        .creep-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .creep-building-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .creep-status {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .creep-desc {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .creep-desc strong { color: var(--brand); }
+
+        /* Category % of income */
+        .cat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cat-item:last-child { border-bottom: none; }
+        .cat-emoji { font-size: 14px; width: 20px; text-align: center; }
+        .cat-name  { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+        .cat-bar   { width: 80px; }
+        .cat-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+        .cat-fill  { height: 100%; border-radius: 2px; }
+        .cat-pct   { font-size: 12px; font-weight: 700; color: var(--text); width: 30px; text-align: right; }
+
+        /* Mini bar chart */
+        .mini-chart {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            height: 48px;
+            margin-top: 12px;
+        }
+
+        .mini-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .mini-bar {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .mini-label { font-size: 10px; color: var(--text2); }
+        .mini-label.active { color: var(--brand); }
+
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <div class="sidebar">
+        <h1>Dashboard Mockup</h1>
+        <p class="subtitle">3-tier swipeable dashboard. Use the arrows below the phone or click a tier here. Keyboard ← → also works.</p>
+
+        <div class="tier-btn active" onclick="goTo(0)">
+            <div class="t-label">Tier 1</div>
+            <div class="t-title">Overview</div>
+            <div class="t-desc">Safe to Spend, Month Projection, AI Insight, Upcoming Bills. The daily decision screen.</div>
+        </div>
+        <div class="tier-btn" onclick="goTo(1)">
+            <div class="t-label">Tier 2</div>
+            <div class="t-title">Financial Health</div>
+            <div class="t-desc">Budget Burn Rate, Subscription Load, Safety Net, Savings Velocity. Unlocked after first full month.</div>
+        </div>
+        <div class="tier-btn" onclick="goTo(2)">
+            <div class="t-label">Tier 3</div>
+            <div class="t-title">Trends & Patterns</div>
+            <div class="t-desc">Lifestyle Creep (building), Spend as % of Income, Savings Trend. Builds progressively over 3–12 months.</div>
+        </div>
+
+        <div class="notes-head">Design Notes</div>
+        <div class="note"><div class="note-dot"></div><p>Mock user: Alex, 26, Melbourne. Fortnightly pay $3,200 net. Day 11 of 14-day cycle. Payday Friday.</p></div>
+        <div class="note"><div class="note-dot"></div><p>Safe to Spend = Income − already spent − committed bills before payday − auto-savings.</p></div>
+        <div class="note"><div class="note-dot"></div><p>Burn rate bars show a vertical tick at "where you should be" in the period — the key differentiator from a plain progress bar.</p></div>
+        <div class="note"><div class="note-dot"></div><p>Lifestyle Creep shows a "building baseline" locked state. Fully active after 3 months; 12-month comparison after 12 months.</p></div>
+        <div class="note"><div class="note-dot"></div><p>AI Insight card uses a priority score (dollar impact × urgency × severity). One insight only — no feed.</p></div>
+    </div>
+
+    <!-- ── Phone ── -->
+    <div class="phone-col">
+        <div class="phone-outer">
+            <div class="phone-screen">
+                <div class="dynamic-island"></div>
+
+                <!-- Status bar -->
+                <div class="status-bar">
+                    <span class="status-time">9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="12" viewBox="0 0 17 12" fill="rgba(240,244,255,0.9)"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="1.5" width="3" height="10.5" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity="0.25"/></svg>
+                        <svg width="16" height="12" viewBox="0 0 16 12" fill="rgba(240,244,255,0.9)"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.4C13.2 1.4 10.7 0 8 0S2.8 1.4 1 3.4l1.4 1.5C3.8 3.4 5.8 2.5 8 2.5z"/><path d="M8 5.5c1.5 0 2.8.6 3.8 1.6l1.4-1.5C11.7 3.9 9.9 3 8 3S4.3 3.9 2.8 5.6l1.4 1.5C5.2 6.1 6.5 5.5 8 5.5z"/><circle cx="8" cy="10" r="2"/></svg>
+                        <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x=".75" y=".75" width="21.5" height="11.5" rx="2.75" stroke="rgba(240,244,255,0.35)" stroke-width="1.5"/><rect x="2" y="2" width="17" height="9" rx="1.5" fill="rgba(240,244,255,0.9)"/><path d="M23.5 4.5v4a2 2 0 000-4z" fill="rgba(240,244,255,0.4)"/></svg>
+                    </div>
+                </div>
+
+                <!-- Tier bar -->
+                <div class="tier-bar">
+                    <span class="tier-badge-pill" id="tierBadge">Tier 1 · Overview</span>
+                    <div class="tier-dots">
+                        <div class="tdot active" id="d0" onclick="goTo(0)"></div>
+                        <div class="tdot" id="d1" onclick="goTo(1)"></div>
+                        <div class="tdot" id="d2" onclick="goTo(2)"></div>
+                    </div>
+                </div>
+
+                <!-- Slider -->
+                <div class="screen-content">
+                    <div class="tier-slider" id="slider">
+
+                        <!-- ════════════════════════
+                             TIER 1 · OVERVIEW
+                        ════════════════════════ -->
+                        <div class="tier-panel">
+
+                            <!-- Header -->
+                            <div class="dash-header">
+                                <div>
+                                    <div class="greeting">Hey Alex 👋</div>
+                                    <div class="greeting-date">Wednesday, 19 Feb 2026</div>
+                                </div>
+                                <div class="avatar">AL</div>
+                            </div>
+
+                            <!-- Payday pill -->
+                            <div class="payday-pill">
+                                <div class="pay-dot"></div>
+                                <div class="pay-text">Payday in <strong>3 days</strong> · ANZ · $3,200</div>
+                                <div class="pay-cycle">Day 11 / 14</div>
+                            </div>
+
+                            <!-- Safe to Spend -->
+                            <div class="hero-card">
+                                <div class="hero-label">Safe to Spend</div>
+                                <div class="hero-amount"><span class="dollar">$</span>312</div>
+                                <div class="hero-sub">until payday · after bills &amp; savings</div>
+                                <div class="progress-track">
+                                    <div class="progress-fill fill-brand" style="width:90%"></div>
+                                </div>
+                                <div class="progress-labels">
+                                    <span>$0 remaining</span>
+                                    <span>78% of period elapsed</span>
+                                    <span>$3,200</span>
+                                </div>
+                            </div>
+
+                            <!-- Month projection + net this month -->
+                            <div class="section-hd">
+                                <div class="section-title">This Month</div>
+                            </div>
+                            <div class="two-col" style="margin-bottom:0">
+                                <div class="metric-card">
+                                    <div class="metric-label">Month Projection</div>
+                                    <div class="metric-value" style="color:var(--green)">+$485</div>
+                                    <div class="badge badge-green" style="margin-top:4px">↑ On Track</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Net So Far</div>
+                                    <div class="metric-value">+$1,240</div>
+                                    <div class="metric-sub">income − spent</div>
+                                </div>
+                            </div>
+
+                            <!-- AI Insight -->
+                            <div class="section-hd">
+                                <div class="section-title">AI Insight</div>
+                                <div class="section-link">Dismiss</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">🍔</div>
+                                <div style="flex:1">
+                                    <div class="insight-tag">⚠ Spending Alert</div>
+                                    <div class="insight-text">Eating out up 67% vs last month. 4 orders this week — on pace to exceed budget by $87.</div>
+                                    <div class="insight-cta">See breakdown →</div>
+                                </div>
+                            </div>
+
+                            <!-- Upcoming bills -->
+                            <div class="section-hd">
+                                <div class="section-title">Upcoming</div>
+                                <div class="section-link">See all</div>
+                            </div>
+                            <div class="list-card">
+                                <div class="list-item">
+                                    <div class="list-icon" style="background:rgba(229,9,20,0.12)">📺</div>
+                                    <div class="list-info">
+                                        <div class="list-name">Netflix</div>
+                                        <div class="list-sub">Tomorrow · Auto-debit</div>
+                                    </div>
+                                    <div class="list-right">
+                                        <div class="list-amount">$18.99</div>
+                                        <div class="list-urgency" style="color:var(--amber)">Tomorrow</div>
+                                    </div>
+                                </div>
+                                <div class="list-item">
+                                    <div class="list-icon" style="background:rgba(78,205,196,0.1)">🏠</div>
+                                    <div class="list-info">
+                                        <div class="list-name">Rent — REA Group</div>
+                                        <div class="list-sub">Fri 21 Feb · Auto-debit</div>
+                                    </div>
+                                    <div class="list-right">
+                                        <div class="list-amount">$1,000</div>
+                                        <div class="list-urgency" style="color:var(--red)">In 2 days</div>
+                                    </div>
+                                </div>
+                                <div class="list-item">
+                                    <div class="list-icon" style="background:rgba(29,185,84,0.1)">🎵</div>
+                                    <div class="list-info">
+                                        <div class="list-name">Spotify</div>
+                                        <div class="list-sub">Sun 23 Feb · Auto-debit</div>
+                                    </div>
+                                    <div class="list-right">
+                                        <div class="list-amount">$12.99</div>
+                                        <div class="list-urgency" style="color:var(--text2)">In 4 days</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /tier-panel 1 -->
+
+                        <!-- ════════════════════════
+                             TIER 2 · FINANCIAL HEALTH
+                        ════════════════════════ -->
+                        <div class="tier-panel">
+                            <div class="tier-heading">Financial Health</div>
+                            <div class="tier-sub">Budget burn rates &amp; wellness metrics</div>
+
+                            <!-- Budget Burn Rate -->
+                            <div class="section-hd">
+                                <div class="section-title">Budget Burn Rate</div>
+                                <div class="section-link">Edit budgets</div>
+                            </div>
+                            <div class="list-card" style="overflow:visible">
+
+                                <!-- OVER BUDGET -->
+                                <div class="burn-item">
+                                    <div class="burn-top">
+                                        <div class="burn-cat">🍔 <span>Eating Out</span></div>
+                                        <div class="burn-right">
+                                            <div class="burn-spent" style="color:var(--red)">$487</div>
+                                            <div class="burn-budget">of $400</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-wrap">
+                                        <div class="progress-track">
+                                            <div class="progress-fill fill-red" style="width:100%"></div>
+                                        </div>
+                                        <div class="period-marker" style="left:78%"></div>
+                                    </div>
+                                    <div class="burn-bottom">
+                                        <div class="badge badge-red">Over Budget · $87 over</div>
+                                        <div class="burn-pct">122%</div>
+                                    </div>
+                                </div>
+
+                                <!-- AT RISK -->
+                                <div class="burn-item">
+                                    <div class="burn-top">
+                                        <div class="burn-cat">🛒 <span>Groceries</span></div>
+                                        <div class="burn-right">
+                                            <div class="burn-spent">$210</div>
+                                            <div class="burn-budget">of $280</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-wrap">
+                                        <div class="progress-track">
+                                            <div class="progress-fill fill-amber" style="width:75%"></div>
+                                        </div>
+                                        <div class="period-marker" style="left:78%"></div>
+                                    </div>
+                                    <div class="burn-bottom">
+                                        <div class="badge badge-amber">At Risk · on pace to overspend</div>
+                                        <div class="burn-pct">75%</div>
+                                    </div>
+                                </div>
+
+                                <!-- ON TRACK -->
+                                <div class="burn-item">
+                                    <div class="burn-top">
+                                        <div class="burn-cat">🚗 <span>Transport</span></div>
+                                        <div class="burn-right">
+                                            <div class="burn-spent">$54</div>
+                                            <div class="burn-budget">of $150</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-wrap">
+                                        <div class="progress-track">
+                                            <div class="progress-fill fill-green" style="width:36%"></div>
+                                        </div>
+                                        <div class="period-marker" style="left:78%"></div>
+                                    </div>
+                                    <div class="burn-bottom">
+                                        <div class="badge badge-green">On Track</div>
+                                        <div class="burn-pct">36%</div>
+                                    </div>
+                                </div>
+
+                                <!-- AT RISK -->
+                                <div class="burn-item">
+                                    <div class="burn-top">
+                                        <div class="burn-cat">🎭 <span>Entertainment</span></div>
+                                        <div class="burn-right">
+                                            <div class="burn-spent">$92</div>
+                                            <div class="burn-budget">of $100</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-wrap">
+                                        <div class="progress-track">
+                                            <div class="progress-fill fill-amber" style="width:92%"></div>
+                                        </div>
+                                        <div class="period-marker" style="left:78%"></div>
+                                    </div>
+                                    <div class="burn-bottom">
+                                        <div class="badge badge-amber">At Risk · $8 remaining</div>
+                                        <div class="burn-pct">92%</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Subscription Load -->
+                            <div class="section-hd">
+                                <div class="section-title">Subscription Load</div>
+                                <div class="section-link">Manage</div>
+                            </div>
+                            <div class="sub-card">
+                                <div class="sub-top">
+                                    <div>
+                                        <div class="sub-head-label">Active Subscriptions</div>
+                                        <div class="sub-count">11 <span>active</span></div>
+                                    </div>
+                                    <div class="badge badge-amber">+2 vs last year</div>
+                                </div>
+                                <div class="sub-grid">
+                                    <div class="sub-metric">
+                                        <div class="sub-metric-label">Per Month</div>
+                                        <div class="sub-metric-value" style="color:var(--teal)">$287</div>
+                                    </div>
+                                    <div class="sub-metric">
+                                        <div class="sub-metric-label">Annualised</div>
+                                        <div class="sub-metric-value" style="color:var(--amber)">$3,444</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Safety Net + Savings Velocity -->
+                            <div class="section-hd">
+                                <div class="section-title">Wellness Metrics</div>
+                            </div>
+                            <div class="health-pair">
+                                <div class="health-card">
+                                    <div class="health-icon">🛡️</div>
+                                    <div class="health-label">Safety Net</div>
+                                    <div class="health-value">2.8</div>
+                                    <div class="health-unit">months runway</div>
+                                    <div class="badge badge-amber" style="margin-top:8px">Below 3mo target</div>
+                                </div>
+                                <div class="health-card">
+                                    <div class="health-icon">🚀</div>
+                                    <div class="health-label">Savings Velocity</div>
+                                    <div class="health-value">18%</div>
+                                    <div class="health-unit">avg of paycheck</div>
+                                    <div class="badge badge-green" style="margin-top:8px">↑ Up from 14%</div>
+                                </div>
+                            </div>
+
+                        </div><!-- /tier-panel 2 -->
+
+                        <!-- ════════════════════════
+                             TIER 3 · TRENDS & PATTERNS
+                        ════════════════════════ -->
+                        <div class="tier-panel">
+                            <div class="tier-heading">Trends &amp; Patterns</div>
+                            <div class="tier-sub">Builds over time as we learn your finances</div>
+
+                            <!-- Lifestyle Creep — building state -->
+                            <div class="section-hd">
+                                <div class="section-title">Lifestyle Creep</div>
+                                <div class="section-link">Learn more</div>
+                            </div>
+                            <div class="creep-card">
+                                <div class="creep-top">
+                                    <div>
+                                        <div class="creep-building-label">Building Baseline</div>
+                                        <div class="creep-status">2 of 3 months complete</div>
+                                    </div>
+                                    <div style="font-size:32px">📈</div>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill fill-brand" style="width:67%"></div>
+                                </div>
+                                <div class="creep-desc">
+                                    We'll compare your 3-month average spend against your 12-month average to detect whether your lifestyle is inflating faster than your income.
+                                    <strong> 1 month to go.</strong>
+                                </div>
+                            </div>
+
+                            <!-- Spend as % of Income -->
+                            <div class="section-hd">
+                                <div class="section-title">Spend as % of Income</div>
+                                <div class="section-link">Feb 2026</div>
+                            </div>
+                            <div class="list-card">
+                                <div style="padding:12px 16px 8px;border-bottom:1px solid var(--border)">
+                                    <div style="font-size:12px;font-weight:600;color:var(--text)">Top categories · February 2026</div>
+                                    <div style="font-size:11px;color:var(--text2);margin-top:2px">Based on $6,400 monthly income</div>
+                                </div>
+                                <div class="cat-item">
+                                    <span class="cat-emoji">🏠</span>
+                                    <span class="cat-name">Housing</span>
+                                    <div class="cat-bar"><div class="cat-track"><div class="cat-fill fill-brand" style="width:62%"></div></div></div>
+                                    <span class="cat-pct">31%</span>
+                                </div>
+                                <div class="cat-item">
+                                    <span class="cat-emoji">🛒</span>
+                                    <span class="cat-name">Groceries</span>
+                                    <div class="cat-bar"><div class="cat-track"><div class="cat-fill fill-brand" style="width:26%"></div></div></div>
+                                    <span class="cat-pct">13%</span>
+                                </div>
+                                <div class="cat-item">
+                                    <span class="cat-emoji">🍔</span>
+                                    <span class="cat-name">Eating Out</span>
+                                    <div class="cat-bar"><div class="cat-track"><div class="cat-fill" style="width:20%;background:var(--red)"></div></div></div>
+                                    <span class="cat-pct" style="color:var(--red)">10%</span>
+                                </div>
+                                <div class="cat-item">
+                                    <span class="cat-emoji">📱</span>
+                                    <span class="cat-name">Subscriptions</span>
+                                    <div class="cat-bar"><div class="cat-track"><div class="cat-fill fill-brand" style="width:13%"></div></div></div>
+                                    <span class="cat-pct">6%</span>
+                                </div>
+                                <div class="cat-item">
+                                    <span class="cat-emoji">🚗</span>
+                                    <span class="cat-name">Transport</span>
+                                    <div class="cat-bar"><div class="cat-track"><div class="cat-fill fill-brand" style="width:10%"></div></div></div>
+                                    <span class="cat-pct">5%</span>
+                                </div>
+                            </div>
+
+                            <!-- Savings Trend -->
+                            <div class="section-hd">
+                                <div class="section-title">Savings Rate Trend</div>
+                                <div class="section-link">4 months</div>
+                            </div>
+                            <div class="metric-card">
+                                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+                                    <div>
+                                        <div class="metric-label">Avg Savings Rate</div>
+                                        <div class="metric-value">18%</div>
+                                        <div class="badge badge-green" style="margin-top:4px">↑ +4% vs 3mo ago</div>
+                                    </div>
+                                    <div style="text-align:right">
+                                        <div class="metric-label">3-Month Total</div>
+                                        <div class="metric-value">$3,840</div>
+                                        <div class="metric-sub">Goal: $5,000</div>
+                                    </div>
+                                </div>
+                                <div class="mini-chart">
+                                    <div class="mini-bar-wrap">
+                                        <div class="mini-bar" style="height:22px;background:rgba(124,110,250,0.25)"></div>
+                                        <span class="mini-label">Nov</span>
+                                    </div>
+                                    <div class="mini-bar-wrap">
+                                        <div class="mini-bar" style="height:28px;background:rgba(124,110,250,0.4)"></div>
+                                        <span class="mini-label">Dec</span>
+                                    </div>
+                                    <div class="mini-bar-wrap">
+                                        <div class="mini-bar" style="height:32px;background:rgba(124,110,250,0.6)"></div>
+                                        <span class="mini-label">Jan</span>
+                                    </div>
+                                    <div class="mini-bar-wrap">
+                                        <div class="mini-bar" style="height:40px;background:var(--brand)"></div>
+                                        <span class="mini-label active">Feb</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /tier-panel 3 -->
+
+                    </div><!-- /slider -->
+                </div><!-- /screen-content -->
+
+                <!-- Bottom nav -->
+                <div class="bottom-nav">
+                    <div class="nav-item active">
+                        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+                        <span class="nav-label">Home</span>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg></div>
+                        <span class="nav-label">Goals</span>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div>
+                        <span class="nav-label">Forecast</span>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+                        <span class="nav-label">Net Worth</span>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+                        <span class="nav-label">Calendar</span>
+                    </div>
+                </div>
+
+            </div><!-- /phone-screen -->
+        </div><!-- /phone-outer -->
+
+        <!-- Arrow controls -->
+        <div class="arrow-row">
+            <div class="arrow-btn" onclick="prev()">←</div>
+            <span class="arrow-label" id="arrowLabel">Overview · 1 of 3</span>
+            <div class="arrow-btn" onclick="next()">→</div>
+        </div>
+
+    </div><!-- /phone-col -->
+</div><!-- /page-wrapper -->
+
+<script>
+    let cur = 0;
+    const total = 3;
+    const labels = ['Overview · 1 of 3', 'Financial Health · 2 of 3', 'Trends & Patterns · 3 of 3'];
+    const badges = ['Tier 1 · Overview', 'Tier 2 · Financial Health', 'Tier 3 · Trends'];
+
+    function goTo(i) {
+        cur = i;
+        document.getElementById('slider').style.transform = `translateX(-${cur * 33.333}%)`;
+        [0,1,2].forEach(n => {
+            document.getElementById('d'+n).className = 'tdot' + (n === cur ? ' active' : '');
+            document.querySelectorAll('.tier-btn')[n].className = 'tier-btn' + (n === cur ? ' active' : '');
+        });
+        document.getElementById('arrowLabel').textContent = labels[cur];
+        document.getElementById('tierBadge').textContent = badges[cur];
+    }
+
+    function next() { if (cur < total - 1) goTo(cur + 1); }
+    function prev() { if (cur > 0) goTo(cur - 1); }
+
+    // Touch/swipe support
+    let tx = 0;
+    const screen = document.querySelector('.phone-screen');
+    screen.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+    screen.addEventListener('touchend', e => {
+        const d = tx - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 40) { d > 0 ? next() : prev(); }
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft') prev();
+    });
+</script>
+</body>
+</html>
