@@ -31,11 +31,21 @@ totem-mobile-mvp/
 │   ├── feature-list.md
 │   ├── design-spec.md
 │   └── database-schema.md  ← Primarily a read layer; adds calendar_day_cache table
-├── Accounts/               ← Screen 4 (complete — app-mockup.html only, docs TBD)
-└── Insights/               ← Screen 5 (complete — app-mockup.html only, docs TBD)
+├── Accounts/               ← Screen 4 (complete)
+│   ├── feature-list.md     ← Account linking, Net Position, To Review queue, rule engine
+│   ├── design-spec.md      ← 3-tab layout, account detail sheet, category picker, rule rows
+│   └── database-schema.md  ← transaction_reviews, ai_categorisation_queue, account_connection_log
+├── Insights/               ← Screen 5 (complete)
+│   ├── feature-list.md     ← Spend/Trends/Income/Forecast tab features and formulas
+│   ├── design-spec.md      ← Dual bar chart, forecast hero, risk flags, period chips
+│   └── database-schema.md  ← metric_snapshots, forecast_cache, spend_trends tables
+└── Onboarding/             ← Pre-app flow (complete — prototype in app-mockup.html)
+    ├── feature-list.md     ← 8-screen flow, state machine, progressive nudges, Basiq pipeline
+    ├── design-spec.md      ← Overlay architecture, ob-screen transitions, all component specs
+    └── database-schema.md  ← onboarding_sessions, bank_connection_attempts, user settings keys
 ```
 
-**Each screen gets its own folder** with the same four files. Dashboard, Plan, and Calendar have full documentation. Accounts and Insights are fully built in `app-mockup.html` but their per-screen docs (feature-list, design-spec, database-schema) are pending — to be written in the next documentation sprint.
+**Each screen gets its own folder** with the same four files. All five app screens and the onboarding flow now have full documentation.
 
 **`app-mockup.html`** (root of repo) is the **unified prototype** — all screens in one file, navigable via the bottom nav. This is the primary UX assessment tool. Individual screen mockups inside each folder are standalone references only.
 
@@ -48,7 +58,7 @@ totem-mobile-mvp/
 - Dashboard tier-switching (← → keys, swipe) only activates when `currentScreen === 'home'`
 - Bottom sheets (`.sheet-backdrop` + `.bottom-sheet`) live outside `.app-screen` inside `.phone-screen`; each sheet has its own backdrop `id` and close function
 - `window._febGridHTML` caches the February calendar grid HTML on init for month-nav restore
-- All `acct-` prefixed IDs/functions belong to the Accounts screen; all `ins-` prefixed belong to Insights
+- All `acct-` prefixed IDs/functions belong to the Accounts screen; all `ins-` prefixed belong to Insights; all `ob-` prefixed belong to the Onboarding overlay
 
 ## Documentation Conventions
 
@@ -110,7 +120,7 @@ Three goal types with distinct visual identities (left-border colour coding):
 - Mock data: Alex, Feb 2026. Today = Thu 19. Payday Feb 8 (past) + Feb 22 (upcoming). Bills: Netflix Feb 20, Rent Feb 21, Spotify Feb 22.
 
 ### Accounts Screen — Screen 4 (complete in app-mockup.html)
-3-tab layout: **Accounts | To Review | Rules**
+4-tab layout: **Accounts | To Review | Rules | Subs**
 
 **Accounts tab:**
 - Net Position hero card = Assets − Debt (Alex: +$13,454 = $14,297 assets − $843 debt)
@@ -127,21 +137,30 @@ Three goal types with distinct visual identities (left-border colour coding):
 
 **Rules tab:**
 - 8 auto-categorisation rules: 4 user-created ("You" badge), 4 AI-detected ("✨ AI" badge)
-- Visual-only ON toggle (green track + white thumb) — no interactivity in mockup
-- Trash icon per rule (decorative in mockup)
+- Each rule row is clickable (`data-merchant`, `data-cat`, `data-emoji` attributes) → opens `acct-rule-edit-sheet`
+- Rule edit sheet: shows merchant context row + 11-category picker grid; save updates the row's icon, label, `data-cat`; AI badge downgrades to "You" on edit
+- ON/OFF toggle and trash icon use `event.stopPropagation()` to prevent triggering row click
+- Add Rule sheet (`acct-add-rule-sheet`) uses separate `add-rule-cat-grid` ID and `pickAddRuleCat()` to avoid ID collision with edit sheet
 
-**Bottom sheets:** `acct-acct-sheet` (account detail, populated by `openAcctDetail()`), `acct-cat-sheet` (category picker, static 11 options)
+**Subs tab:**
+- 11 active subscription rows in a `.list-card` inside `.tab-pane#acct-pane-subs`
+- Each row: `.list-icon` rounded-square icon (brand-tinted per service colour) + merchant name + category tag + monthly cost
+- Active subscriptions: Netflix $18.99 · Spotify $12.99 · Apple TV+ $12.99 · YouTube Premium $22.99 · Disney+ $13.99 · iCloud+ $4.99 · Amazon Prime $9.99 · ChatGPT Plus $29.99 · F45 Training $65 · Adobe CC $89.99 · Headspace $12.99
+- Header action shows "11 active" (static label, no onclick)
+- Dashboard "Manage subscriptions" → `navigateToAcctSubs()` which calls `navigate('accounts')` then `switchAcctTab('subs')` after 300ms delay
 
-**Key JS functions:** `switchAcctTab`, `updateAcctHeader`, `approveTransaction`, `openCatSheet`, `closeCatSheet`, `pickCategory`, `openAcctDetail`, `closeAcctSheet`
+**Bottom sheets:** `acct-acct-sheet` (account detail), `acct-cat-sheet` (To Review category picker), `acct-rule-edit-sheet` (rule edit — 11 categories in 3-col grid), `acct-add-rule-sheet` (add new rule)
 
-**State:** `acctReviewCount` (starts at 24), `acctTotalGoal` (30), `acctPendingTxn` (stores txn ID during category picker flow)
+**Key JS functions:** `switchAcctTab`, `updateAcctHeader`, `approveTransaction`, `openCatSheet`, `closeCatSheet`, `pickCategory`, `openAcctDetail`, `closeAcctSheet`, `navigateToAcctSubs`, `openRuleEdit`, `pickRuleCat`, `saveRuleEdit`, `closeRuleEdit`, `pickAddRuleCat`
+
+**State:** `acctReviewCount` (starts at 24), `acctTotalGoal` (30), `acctPendingTxn` (txn ID during category picker flow), `currentRuleEl` (rule row element during edit flow)
 
 ### Insights Screen — Screen 5 (complete in app-mockup.html)
 4-tab layout: **Spend | Trends | Income | Forecast**
 
 **Spend tab:**
-- Period chips: This Month / 3 Months / 12 Months (visual only in mockup)
-- KPI row: Total Spent $2,781 · Daily avg $146 · Saved 18%
+- Period chips: This Month / 3 Months / 12 Months — fully interactive (`switchInsPeriod(period, chipEl)`), switches all KPI values, income label, and all 10 category bar widths/percentages/amounts
+- KPI row: Total Spent $2,781 · Daily avg $146 · Saved 18% (This Month defaults)
 - Category breakdown: 10 categories with horizontal bars scaled to % of $6,400 monthly income; red bar = Dining Out (over 5% threshold)
 - Top 5 merchants with proportional fill bars
 - AI insight card (Dining Out creep flagged)
@@ -165,7 +184,61 @@ Three goal types with distinct visual identities (left-border colour coding):
 - **Upcoming known expenses**: Rent Feb 21, Car rego Mar 15 ($680), Japan flights deposit Apr 1 ($1,200)
 - **AI flags**: 4 items — Dining Out risk (red), Car rego heads-up (amber), Japan opportunity (green), Safety Net milestone (brand)
 
-**Key JS function:** `switchInsTab(tab)` — same pattern as `switchPlanTab` and `switchAcctTab`
+**Key JS functions:** `switchInsTab(tab)`, `switchInsPeriod(period, chipEl)` — period chip handler; data object `insSpendData` holds This Month / 3 Months / 12 Months datasets (KPI values, income label, 10 category rows each with emoji, name, pct, bar width, colour, amount)
+
+### Onboarding Flow (complete in app-mockup.html)
+8-screen flow rendered as a full-screen overlay (`z-index: 35`, `top: 54px` to keep status bar visible) above all app screens and the bottom nav.
+
+**3 phases + progressive in-app:**
+- **Phase 1 — Hook**: Screen 1 (Welcome / "Explore with sample data" / "Get started") → Screen 2 (Account creation — Apple or email/password, minimal fields)
+- **Phase 2 — Connect**: Screen 3 (Bank select — ANZ/CBA/Westpac/NAB/Macquarie/Other via Basiq) → Screen 4 (Pay cycle self-report; income NOT asked — auto-detected from feed) → Screen 5 (Bank auth — Basiq CDR OAuth, in-app WebView) → Screen 6 (Processing animation — Basiq import + AI categorisation + metrics pipeline, SSE-driven)
+- **Phase 3 — Reveal + First Task**: Screen 7 (The Reveal — real Safe to Spend, top category, savings rate, AI flag) → Screen 8 (Transaction review preview — 30-transaction gate, 3 preview items)
+- **Phase 4 — Progressive**: AI chat bubble nudges on first Goals tab visit and first Insights tab visit; not a dedicated screen
+
+**Key design decisions:**
+- "Explore with sample data" creates no user record; device_id stored locally; linked to user_id on later account creation
+- Pay cycle auto-refined from bank feed after import; user shown confirmation card on first Dashboard open if detection differs
+- Basiq CDR pulls up to 12 months of history automatically — no CSV import needed for AU major banks
+- Screen 7 (The Reveal) is the highest-converting moment; both CTAs advance to Screen 8 (corrections happen through review process)
+
+**Key JS functions:** `showOnboarding()`, `obTo(id)`, `obExplore()`, `obComplete()`, `obSelectBank(el)`, `obSelectCycle(el)`, `obStartConnect()`, `obRunProcessing()`
+
+**Sidebar entry:** "Prototype Flows → Onboarding Flow" calls `showOnboarding()`. Onboarding notes shown in `notes-onboarding`.
+
+**State machine** (`users.onboarding_step`): `null` → `account_created` → `bank_connect` → `pay_cycle` → `bank_auth` → `processing` → `reveal` → `review_transactions` → `complete`. Escape hatches: `skipped_bank`, `explore_mode`.
+
+### Financial Archetype System — AI Personalisation
+Totem uses a psychographic classification system based on the Klontz Money Script Inventory (KMSI-R) to adapt the AI chat assistant's tone and framing to each user's relationship with money.
+
+**Trigger**: Post-first-value — fires after the user's *first* AI chat exchange (not on open). `sendChat()` flips `chatFirstMsg = false` on the first user message, then after the AI responds it calls `_offerQuiz()`. Input is locked (`quizState === 'running'` guard) during the quiz so typed messages cannot interrupt.
+
+**4 Archetypes:**
+| Archetype | Label | Icon | Colour | Core belief |
+|---|---|---|---|---|
+| The Detacher | Money Avoidance | 🌊 | `--amber` | Money is stressful or morally complicated |
+| The Chaser | Money Worship | 🚀 | `--brand` | More money = more happiness |
+| The Achiever | Money Status | 🏆 | `--teal` | Self-worth tied to net worth |
+| The Guardian | Money Vigilance | 🛡️ | `--green` | Cautious, savings-focused, anxious |
+
+**Quiz**: 6 questions (KMSI-R adapted for consumer UX), each with 4 answer chips (one per archetype). Rendered entirely in-chat — one question per AI bubble, chips below. Scoring: tally per archetype; most answers wins. Tiebreak priority: vigilance > status > worship > avoidance.
+
+**Result card** shown in-chat after Q6: `.archetype-card` with colour-coded `border-left`, icon, name, label, description paragraph, and AI communication commitment line.
+
+**Post-quiz UI:**
+- **Chat header chip** (`.chat-archetype-chip#chat-archetype-chip`): hidden by default, gains `.visible` class on quiz completion — shows `{icon} {name}`, tapping opens profile sheet
+- **Profile sheet** (`dash-profile-sheet`): archetype banner (`#profile-arch-banner`, hidden until quiz done) pre-populated by `_populateArchetypeProfile()`; "Retake personality quiz" → `retakeQuiz()` resets all state and restarts quiz
+
+**AI communication adaptations (behaviour, not UI):**
+- **Detacher**: Normalise money conversations, reduce shame, frame as self-care, celebrate small wins
+- **Chaser**: Reality-check lifestyle creep, celebrate non-monetary wins, help reframe "enough"
+- **Achiever**: Focus on personal benchmarks not comparisons, authentic goal-setting
+- **Guardian**: Data-rich responses, validate caution, affirm that values-spending is OK
+
+**Key JS state:** `chatFirstMsg` (bool — triggers quiz offer), `quizState` (idle | offered | running | done | skipped), `quizScores` ({avoidance, worship, status, vigilance}), `userArchetype` (string | null)
+
+**Key JS functions:** `sendChat()`, `_offerQuiz()`, `beginQuiz()`, `skipQuiz()`, `_showQuizQ(idx)`, `answerQ(btn,arch,idx)`, `_calcArchetype()`, `_showResult()`, `_populateArchetypeProfile()`, `retakeQuiz()`
+
+**Key data constants:** `archetypes` (obj keyed by archetype — name, label, icon, color, desc, aiNote), `quizQs` (array of 6 — each has `q` string and `opts` array of {t, a})
 
 ### Navigation Architecture (complete)
 5-tab bottom nav: **Home** (Dashboard), **Plan** (Goals + Budgets), **Calendar**, **Accounts**, **Insights**. AI Chat is a persistent floating action button (✨ FAB) above the bottom nav on every screen — not a nav tab. This is the Monarch/Nova pattern: chat as an overlay layer.
@@ -192,10 +265,21 @@ All screens use a consistent dataset for a single fictional user:
 - **AI milestone:** 24/30 transactions reviewed (80%)
 - **Goals:** Japan Trip $2,840/$4,200 (ETA May 2026) · Safety Net $12,450/$14,550 (ETA Apr 2026) · New Car $3,100/$10,000 (ETA Dec 2026)
 
-## Pending Documentation (next sprint)
-- `Accounts/feature-list.md` — To Review queue logic, category rule engine, Basiq webhook flow
-- `Accounts/design-spec.md` — account detail sheet, category picker grid, rule row components
-- `Accounts/database-schema.md` — `transaction_reviews`, `categorisation_rules`, `account_links` tables
-- `Insights/feature-list.md` — Forecast projection algorithm, Lifestyle Creep calculation detail, goal ETA formula
-- `Insights/design-spec.md` — dual bar chart, forecast hero card, risk flag components
-- `Insights/database-schema.md` — `metric_snapshots`, `forecast_cache`, `spend_trends` tables
+## End-of-Session Documentation Protocol
+
+**When the user says "update docs" (or equivalent) at the end of a session, ALL of the following must be written or updated before the session closes:**
+
+1. **CLAUDE.md** — any new architectural decisions, screen summaries, metric definitions, JS function names, state variables, data flow notes, or mock data changes made during the session must be reflected here
+2. **Per-screen `feature-list.md`** — any new features, formula changes, edge case discoveries, or calculation schedule changes for any screen touched this session
+3. **Per-screen `design-spec.md`** — any new components, layout changes, animation specs, colour usage, or interaction patterns introduced
+4. **Per-screen `database-schema.md`** — any new tables, columns, indexes, or data flow steps added
+5. **New screen folders** — if a new screen was started or completed, its full `Accounts/`-style folder with all four files must be created before session end
+6. **"Pending Documentation" section below** — keep this list accurate; remove items as they're completed, add items for anything deferred
+
+The goal is zero documentation debt at the end of every session. A future Claude instance reading only this repo should be able to reconstruct exactly what was built and why.
+
+---
+
+## Pending Documentation
+
+All screen documentation is now complete. If new features, screens, or architectural decisions are made in future sessions, update docs via the End-of-Session Protocol above.
